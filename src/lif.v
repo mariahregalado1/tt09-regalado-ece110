@@ -11,7 +11,7 @@ module lif (
 wire [7:0] next_state;
 reg[7:0] threshold;
 
-always(@posedge clk) begin
+always @(posedge clk) begin
     if (!rst_n) begin
         state <= 0;
         threshold <= 200;
