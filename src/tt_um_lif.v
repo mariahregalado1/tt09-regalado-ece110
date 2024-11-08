@@ -5,7 +5,7 @@
 
 `default_nettype none
 
-module tt_um_lif1 (
+module tt_um_stdp (
     input  wire [7:0] ui_in,    // Dedicated inputs
     output wire [7:0] uo_out,   // Dedicated outputs
     input  wire [7:0] uio_in,   // IOs: Input path
@@ -18,11 +18,11 @@ module tt_um_lif1 (
 
   // All output pins must be assigned. If not used, assign to 0.
 
-  assign uio_out[6:0] = 0;
+  assign uio_out = 0;
   assign uio_oe  = 0;
 
   // List all unused inputs to prevent warnings
   wire _unused = &{ena, uio_in, 1'b0};
-  lif lif1 (.current(ui_in), .clk(clk), .rst_n(rst_n), .state(uo_out), .spike(uio_out[7]));
+  stdp stdp (.pre_spike(ui_in), .post_spike(uio.in) .clk(clk), .rst_n(reset), .weight(uo_out));
 
 endmodule
