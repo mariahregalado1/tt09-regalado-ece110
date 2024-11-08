@@ -17,12 +17,13 @@ module tt_um_stdp (
 );
 
   // All output pins must be assigned. If not used, assign to 0.
-
+  assign ui_in[6:0] = 0;
+  assign uio_in[6:0] = 0;
   assign uio_out = 0;
   assign uio_oe  = 0;
 
   // List all unused inputs to prevent warnings
   wire _unused = &{ena, 1'b0};
-  stdp stdp (.pre_spike(ui_in), .post_spike(uio_in), .clk(clk), .reset(rst_n), .weight(uo_out));
+  stdp stdp (.pre_spike(ui_in[7]), .post_spike(uio_in[7]), .clk(clk), .reset(rst_n), .weight(uo_out));
 
 endmodule
