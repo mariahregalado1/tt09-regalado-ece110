@@ -1,3 +1,4 @@
+`default_nettype none
 module stdp (
     input wire clk,
     input wire reset,
