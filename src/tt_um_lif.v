@@ -23,7 +23,7 @@ module tt_um_stdp (
   assign uio_oe  = 0;
 
   // List all unused inputs to prevent warnings
-  wire _unused = &{ena, ui_in[6:0], uio_in[6:0] 1'b0};
+  wire _unused = &{ena, ui_in[6:0], uio_in[6:0], 1'b0};
   stdp stdp (.pre_spike(ui_in[7]), .post_spike(uio_in[7]), .clk(clk), .reset(rst_n), .weight(uo_out));
 
 endmodule
