@@ -17,8 +17,8 @@ module tt_um_stdp (
 );
 
   // All output pins must be assigned. If not used, assign to 0.
-  assign ui_in[6:0] = 0;
-  assign uio_in[6:0] = 0;
+  assign ui_in [6:0] = 0;
+  assign uio_in [6:0] = 0;
   assign uio_out = 0;
   assign uio_oe  = 0;
 
