@@ -49,3 +49,62 @@ async def test_project(dut):
 
     # Keep testing the module by changing the input values, waiting for
     # one or more clock cycles, and asserting the expected output values.
+    clock = Clock(dut.clk, 1, units="ns")
+    cocotb.start_soon(clock.start())
+
+    dut.rst_n.value = 1
+    dut.ui_in.value = 0
+    dut.uio_in.value = 0
+    await ClockCycles(dut.clk, 2)  
+    dut.rst_n.value = 0
+    await ClockCycles(dut.clk, 1)  
+
+    #apply pre_spike (ui_in[7]) followed by post_spike (uio_in[7])
+    dut.ui_in.value = 0b10000000  #only ui_in[7] high
+    await ClockCycles(dut.clk, 1)  
+    dut.ui_in.value = 0
+    await ClockCycles(dut.clk, 5)
+    #post_spike (uio_in[7]) after delay
+    dut.uio_in.value = 0b10000000  #only uio_in[7] high
+    await ClockCycles(dut.clk, 1)
+    dut.uio_in.value = 0
+    await ClockCycles(dut.clk, 5) 
+    potentiated_weight = int(dut.uo_out.value)
+    dut._log.info(f"Weight after potentiation: {bin(potentiated_weight)}")
+
+    #apply post_spike then pre_spike 
+    dut.uio_in.value = 0b10000000  #only uio_in[7] high
+    await ClockCycles(dut.clk, 1)  
+    dut.uio_in.value = 0
+    await ClockCycles(dut.clk, 5)
+    #pre_spike after delay
+    dut.ui_in.value = 0b10000000  #only ui_in[7] high
+    await ClockCycles(dut.clk, 1)  
+    dut.ui_in.value = 0
+    await ClockCycles(dut.clk, 5) 
+    depressed_weight = int(dut.uo_out.value)
+    dut._log.info(f"Weight after depression: {bin(depressed_weight)}")
+    #boundary tests - repeated potentiation
+    for _ in range(20): 
+        dut.ui_in.value = 0b10000000
+        await ClockCycles(dut.clk, 1)
+        dut.ui_in.value = 0
+        await ClockCycles(dut.clk, 1)
+        dut.uio_in.value = 0b10000000
+        await ClockCycles(dut.clk, 1)
+        dut.uio_in.value = 0
+        await ClockCycles(dut.clk, 1)
+    assert int(dut.uo_out.value) <= 0b11111111, f"Weight exceeded maximum: {bin(dut.uo_out.value)}"
+    #repeated depression
+    for _ in range(20): 
+        dut.uio_in.value = 0b10000000
+        await ClockCycles(dut.clk, 1)
+        dut.uio_in.value = 0
+        await ClockCycles(dut.clk, 1)
+        dut.ui_in.value = 0b10000000
+        await ClockCycles(dut.clk, 1)
+        dut.ui_in.value = 0
+        await ClockCycles(dut.clk, 1)
+    assert int(dut.uo_out.value) >= 0b00000000, f"Weight dropped below minimum: {bin(dut.uo_out.value)}"
+
+    dut._log.info("Test completed!!! Yay :D")
